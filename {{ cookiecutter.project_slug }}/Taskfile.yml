@@ -1,0 +1,37 @@
+version: '3'
+
+vars:
+  PYTHON_VENV: .venv        # Set the location of the virtual environment
+
+dotenv: [ '../.env.dev' ]   # Set the location of the env file
+
+tasks: 
+  # Creates a python virtual environment
+  # BROKEN!!!
+  # conda doesn't work in the taskfile, warns that conda init is not set up
+  create-venv:
+    desc: "Creates a python virtual environment"
+    cmds:
+      - conda activate python3.12
+      - python3.12 -m venv {{.PYTHON_VENV}}
+
+  # Runs ruff linter
+  lint:
+    desc: "Lint files using ruff"
+    cmds:
+      - source {{.PYTHON_VENV}}/bin/activate
+      - python -m ruff check
+
+  # Apply ruff linter
+  lint-fix:
+    desc: "Lint files using ruff"
+    cmds:
+      - source {{.PYTHON_VENV}}/bin/activate
+      - python -m ruff check --fix
+
+  # Runs ruff formatting
+  format:
+    desc: "Format files using ruff"
+    cmds:
+      - source {{.PYTHON_VENV}}/bin/activate
+      - python -m ruff format

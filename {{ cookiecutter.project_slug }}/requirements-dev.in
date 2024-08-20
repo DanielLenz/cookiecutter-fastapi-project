@@ -1,0 +1,7 @@
+-c requirements.txt
+ruff
+isort
+mypy
+ipython
+pytest
+pytest-cov

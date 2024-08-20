@@ -1,0 +1,10 @@
+{
+    "project_name": "fastapi_project",
+    "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
+    "short_description": "A FastAPI project",
+    "email": "",
+    "name": "",
+    "_copy_without_render": [
+        "Taskfile.yml"
+    ]
+}

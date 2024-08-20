@@ -1,0 +1,7 @@
+[tool.mypy]
+ignore_missing_imports = true
+junit_xml = "mypy-junit.xml"
+check_untyped_defs = true
+
+[tool.ruff]
+lint.extend-select = ["I"]
