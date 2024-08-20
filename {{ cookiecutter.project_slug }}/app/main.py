@@ -17,9 +17,9 @@ app = FastAPI(
     title="A FastAPI project",
     version=VERSION.__str__(),
     openapi_tags=SWAGGER_TAGS,
-    contact={"name": "{{ cookiecutter.name }}", "email": "{{ cookiecutter.email }}"},
+    contact={"name": "{{ cookiecutter.user_name }}", "email": "{{ cookiecutter.user_email }}"},
     docs_url=SWAGGER_DOCS_URI,
-    description="{{ cookiecutter.short_description }}",
+    description="{{ cookiecutter.project_short_description }}",
     lifespan=lifespan,
 )
 
