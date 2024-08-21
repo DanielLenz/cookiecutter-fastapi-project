@@ -3,7 +3,7 @@
 Cookiecutter template for a FastAPI app.
 
 * GitHub repo: https://github.com/DanielLenz/cookiecutter-fastapi-project
-* Documentation: https://cookiecutter-fastapi-project.readthedocs.io/
+* Documentation: https://cookiecutter-fastapi-project.readthedocs.io
 * Free software: BSD-3 license
 
 # Quickstart

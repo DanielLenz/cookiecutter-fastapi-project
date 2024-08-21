@@ -1,6 +1,5 @@
 -c requirements.txt
 ruff
-isort
 mypy
 ipython
 pytest

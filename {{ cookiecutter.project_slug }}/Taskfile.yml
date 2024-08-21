@@ -6,14 +6,37 @@ vars:
 dotenv: [ '../.env.dev' ]   # Set the location of the env file
 
 tasks: 
-  # Creates a python virtual environment
-  # BROKEN!!!
-  # conda doesn't work in the taskfile, warns that conda init is not set up
-  create-venv:
-    desc: "Creates a python virtual environment"
+  check-python-version:
+    desc: "Check if the Python version is 3.11 or higher"
     cmds:
-      - conda activate python3.12
-      - python3.12 -m venv {{.PYTHON_VENV}}
+      - |
+          # Get the Python version  
+          PYTHON_VERSION=$(python --version 2>&1)
+
+          # Extract the major and minor version numbers  
+          MAJOR_VERSION=$(echo $PYTHON_VERSION | awk '{print $2}' | cut -d. -f1)  
+          MINOR_VERSION=$(echo $PYTHON_VERSION | awk '{print $2}' | cut -d. -f2)  
+            
+          # Check if the version is exactly 3 and at least 11  
+          if [ "$MAJOR_VERSION" -eq 3 ] && [ "$MINOR_VERSION" -ge 11 ]; then  
+              echo "Python version is 3.11 or higher."  
+              exit 0  
+          else  
+              echo "Python version is not 3.11 or higher."  
+              exit 1  
+          fi
+
+  create-venv:
+    desc: "Creates a Python virtual environment, based on conda"
+    deps: [ check-python-version ]
+    cmds:
+      - python -m venv {{.PYTHON_VENV}}
+
+  update-requirements:
+    desc: "Updates the requirements file"
+    cmds:
+      - source {{.PYTHON_VENV}}/bin/activate
+      - sh update-requirements.sh
 
   # Runs ruff linter
   lint:

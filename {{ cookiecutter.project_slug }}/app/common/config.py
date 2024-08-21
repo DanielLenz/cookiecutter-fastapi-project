@@ -7,6 +7,7 @@ VERSION = semver.Version.parse(_VERSION)
 
 
 LOGGING_LEVEL: int = logging.INFO
+DATABASE_URL = "sqlite:///test.db"
 
 SWAGGER_TAGS = [
     {
