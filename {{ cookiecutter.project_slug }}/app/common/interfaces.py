@@ -24,6 +24,11 @@ class UserCreate(BaseModel):
     name: str
 
 
+class UserUpdate(BaseModel):
+    id: int
+    name: str
+
+
 # DB models
 ###########
 class Base(DeclarativeBase):
