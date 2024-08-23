@@ -25,7 +25,6 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    id: int
     name: str
 
 

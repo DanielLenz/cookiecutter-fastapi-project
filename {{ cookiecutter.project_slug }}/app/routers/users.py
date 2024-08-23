@@ -32,7 +32,8 @@ async def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_
     db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
-    db_user.update(user.model_dump())
+    for key, value in user.model_dump().items():
+        setattr(db_user, key, value)
     db.commit()
     db.refresh(db_user)
     return User(**db_user.__dict__)
