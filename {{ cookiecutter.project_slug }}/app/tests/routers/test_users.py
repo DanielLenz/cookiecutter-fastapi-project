@@ -26,6 +26,7 @@ def test_get_user(client: TestClient):
     assert data["name"] == user.name
     assert data["id"] == user_id
 
+
 def test_update_user(client: TestClient):
     user = UserCreate(name="Another Test User")
     response = client.post("/v0/users/", json=user.model_dump())

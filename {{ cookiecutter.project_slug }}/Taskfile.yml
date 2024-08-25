@@ -7,7 +7,7 @@ dotenv: [ '../.env.dev' ]   # Set the location of the env file
 
 tasks: 
   check-python-version:
-    desc: "Check if the Python version is 3.11 or higher"
+    desc: "Check if the Python version is 3.12 or higher"
     cmds:
       - |
           # Get the Python version  
@@ -17,44 +17,49 @@ tasks:
           MAJOR_VERSION=$(echo $PYTHON_VERSION | awk '{print $2}' | cut -d. -f1)  
           MINOR_VERSION=$(echo $PYTHON_VERSION | awk '{print $2}' | cut -d. -f2)  
             
-          # Check if the version is exactly 3 and at least 11  
-          if [ "$MAJOR_VERSION" -eq 3 ] && [ "$MINOR_VERSION" -ge 11 ]; then  
-              echo "Python version is 3.11 or higher."  
+          # Check if the version is exactly 3 and at least 12 
+          if [ "$MAJOR_VERSION" -eq 3 ] && [ "$MINOR_VERSION" -ge 12 ]; then  
+              echo "Python version is 3.12 or higher."  
               exit 0  
           else  
-              echo "Python version is not 3.11 or higher."  
+              echo "Python version is not 3.12 or higher."  
               exit 1  
           fi
 
   create-venv:
-    desc: "Creates a Python virtual environment, based on conda"
-    deps: [ check-python-version ]
+    desc: "Creates a Python virtual environment"
+    deps:
+      - check-python-version
     cmds:
       - python -m venv {{.PYTHON_VENV}}
 
   update-requirements:
     desc: "Updates the requirements file"
     cmds:
-      - source {{.PYTHON_VENV}}/bin/activate
-      - sh update-requirements.sh
+      - >-
+        source {{.PYTHON_VENV}}/bin/activate
+        sh update-requirements.sh
 
   # Runs ruff linter
   lint:
     desc: "Lint files using ruff"
     cmds:
-      - source {{.PYTHON_VENV}}/bin/activate
-      - python -m ruff check
+      - >-
+        source {{.PYTHON_VENV}}/bin/activate
+        python -m ruff check
 
   # Apply ruff linter
   lint-fix:
     desc: "Lint files using ruff"
     cmds:
-      - source {{.PYTHON_VENV}}/bin/activate
-      - python -m ruff check --fix
+      - >-
+        source {{.PYTHON_VENV}}/bin/activate
+        python -m ruff check --fix
 
   # Runs ruff formatting
   format:
     desc: "Format files using ruff"
     cmds:
-      - source {{.PYTHON_VENV}}/bin/activate
-      - python -m ruff format
+      - >-
+        source {{.PYTHON_VENV}}/bin/activate
+        python -m ruff format

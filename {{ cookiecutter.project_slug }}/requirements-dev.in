@@ -1,5 +1,6 @@
 -c requirements.txt
 ruff
+uv
 mypy
 ipython
 pytest
