@@ -1,7 +1,8 @@
 version: '3'
 
 vars:
-  PYTHON_VENV: .venv        # Set the location of the virtual environment
+  PYTHON_VENV: .venv
+  DOCKER_IMAGENAME: {{cookiecutter.project_slug}}
 
 dotenv: [ '../.env.dev' ]   # Set the location of the env file
 
@@ -31,13 +32,13 @@ tasks:
     deps:
       - check-python-version
     cmds:
-      - python -m venv {{.PYTHON_VENV}}
+      - python -m venv {{"{{"}}.PYTHON_VENV{{"}}"}}
 
   update-requirements:
     desc: "Updates the requirements file"
     cmds:
       - >-
-        source {{.PYTHON_VENV}}/bin/activate
+        source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
         sh update-requirements.sh
 
   # Runs ruff linter
@@ -45,7 +46,7 @@ tasks:
     desc: "Lint files using ruff"
     cmds:
       - >-
-        source {{.PYTHON_VENV}}/bin/activate
+        source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
         python -m ruff check
 
   # Apply ruff linter
@@ -53,7 +54,7 @@ tasks:
     desc: "Lint files using ruff"
     cmds:
       - >-
-        source {{.PYTHON_VENV}}/bin/activate
+        source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
         python -m ruff check --fix
 
   # Runs ruff formatting
@@ -61,5 +62,15 @@ tasks:
     desc: "Format files using ruff"
     cmds:
       - >-
-        source {{.PYTHON_VENV}}/bin/activate
+        source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
         python -m ruff format
+
+  docker-build:
+    desc: "Build the Docker image"
+    cmds:
+      - docker build -t {{"{{"}}.DOCKER_IMAGENAME{{"}}"}} .
+  
+  docker-run:
+    desc: "Run the Docker container"
+    cmds:
+      - docker run --rm -p 8000:8000 {{"{{"}}.DOCKER_IMAGENAME{{"}}"}}

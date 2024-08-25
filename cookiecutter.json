@@ -3,9 +3,5 @@
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
     "project_short_description": "A FastAPI project",
     "user_name": "Alice",
-    "user_email": "mail@notarealdomain.com",
-    "_copy_without_render": [
-        "Taskfile.yml",
-        "tasks/*"
-    ]
+    "user_email": "mail@notarealdomain.com"
 }

@@ -14,4 +14,4 @@ COPY ./app $WORKDIR/app
 RUN chown -hvR appuser $WORKDIR
 USER appuser
 
-CMD ["fastapi", "run", "app/main.py", "--port", "3000"]
+CMD ["fastapi", "run", "app/main.py", "--port", "8000"]
