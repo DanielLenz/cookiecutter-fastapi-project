@@ -2,20 +2,27 @@ from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.common.config import SWAGGER_TAGS, VERSION
 from app.common.database import engine
 from app.common.interfaces import Base
+from app.common.ratelimits import limiter
 from app.common.uri import HOME_URI, SWAGGER_DOCS_URI
 from app.routers import chat, users
 
 
+# Startup and shutdown events
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     yield
 
 
+# App creation
 app = FastAPI(
     title="A FastAPI project",
     version=VERSION.__str__(),
@@ -52,6 +59,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# HTTPS redirect
+app.add_middleware(HTTPSRedirectMiddleware)
+
+# Rate limiting
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
 
 @app.get(HOME_URI, tags=["Common"], include_in_schema=False)
 async def read_root():
