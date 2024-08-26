@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.common.config import SWAGGER_TAGS, VERSION
 from app.common.database import engine
@@ -34,7 +35,24 @@ router.include_router(chat.router, prefix="/chat")
 router.include_router(users.router, prefix="/users")
 app.include_router(router, prefix=f"/v{VERSION.major}")
 
+# Middleware
+############
 
-@app.get(HOME_URI, tags=["Common"])
+# CORS
+origins = [
+    "*",
+    # "https://mydomain.com",
+    # "http://localhost",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get(HOME_URI, tags=["Common"], include_in_schema=False)
 async def read_root():
     return "App is running"
