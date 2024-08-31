@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "FastAPI-project-docs"
+version = "2020.0.0"
+# dynamic = ["version"]
+requires-python = "~=3.12.5"
+dependencies = [
+    "sphinx~=7.4.7",
+    "sphinx-rtd-theme~=2.0.0",
+    "sphinx-autobuild~=2024.4.16",
+    "docutils",
+    "jinja2~=3.1.4",
+    "MarkupSafe~=2.1.5",
+    "Pygments~=2.18.0",
+    "babel",
+]
