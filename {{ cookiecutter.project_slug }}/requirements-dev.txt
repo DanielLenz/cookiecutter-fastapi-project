@@ -12,8 +12,6 @@ iniconfig==2.0.0
     # via pytest
 ipython==8.26.0
     # via -r requirements-dev.in
-isort==5.13.2
-    # via -r requirements-dev.in
 jedi==0.19.1
     # via ipython
 matplotlib-inline==0.1.7
@@ -23,7 +21,9 @@ mypy==1.11.1
 mypy-extensions==1.0.0
     # via mypy
 packaging==24.1
-    # via pytest
+    # via
+    #   -c requirements.txt
+    #   pytest
 parso==0.8.4
     # via jedi
 pexpect==4.9.0
@@ -60,5 +60,7 @@ typing-extensions==4.12.2
     # via
     #   -c requirements.txt
     #   mypy
+uv==0.4.1
+    # via -r requirements-dev.in
 wcwidth==0.2.13
     # via prompt-toolkit
