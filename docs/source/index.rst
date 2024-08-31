@@ -2,8 +2,8 @@ Welcome to the 'Cookiecutter for FastAPI' documentation!
 ===================================
 
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+Check out the :doc:`about` section for further information,
+including how to :ref:`install <installation>` the project.
 
 .. note::
 
@@ -14,4 +14,6 @@ Contents
 
 .. toctree::
 
-   usage
+   about
+   tutorial
+   features
