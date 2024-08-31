@@ -1,8 +1,20 @@
 import logging
+import os
+from functools import cache
 
 import semver
+import toml
 
-_VERSION: str = "0.1.0"
+
+@cache
+def get_version():
+    pyproject_path = os.path.join(os.path.dirname(__file__), "../../pyproject.toml")
+    with open(pyproject_path, "r") as f:
+        pyproject_data = toml.load(f)
+    return pyproject_data["project"]["version"]
+
+
+_VERSION = get_version()
 VERSION = semver.Version.parse(_VERSION)
 
 

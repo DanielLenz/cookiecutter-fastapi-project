@@ -11,7 +11,7 @@ from app.common.config import SWAGGER_TAGS, VERSION
 from app.common.database import engine
 from app.common.interfaces import Base
 from app.common.ratelimits import limiter
-from app.common.uri import HOME_URI, SWAGGER_DOCS_URI
+from app.common.uri import HOME_URI, SWAGGER_DOCS_URI, VERSION_URI
 from app.routers import chat, users
 
 
@@ -61,7 +61,7 @@ app.add_middleware(
 )
 
 # HTTPS redirect
-app.add_middleware(HTTPSRedirectMiddleware)
+# app.add_middleware(HTTPSRedirectMiddleware)
 
 # Rate limiting
 app.state.limiter = limiter
@@ -72,3 +72,8 @@ app.add_middleware(SlowAPIMiddleware)
 @app.get(HOME_URI, tags=["Common"], include_in_schema=False)
 async def read_root():
     return "App is running"
+
+
+@app.get(VERSION_URI, tags=["Common"], include_in_schema=False)
+async def read_version():
+    return VERSION.__str__()
