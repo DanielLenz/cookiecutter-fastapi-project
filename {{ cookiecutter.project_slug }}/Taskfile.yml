@@ -41,7 +41,6 @@ tasks:
         source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
         sh update-requirements.sh
 
-  # Runs ruff linter
   lint:
     desc: "Lint files using ruff"
     cmds:
@@ -49,7 +48,6 @@ tasks:
         source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
         python -m ruff check
 
-  # Apply ruff linter
   lint-fix:
     desc: "Lint files using ruff"
     cmds:
@@ -57,13 +55,19 @@ tasks:
         source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
         python -m ruff check --fix
 
-  # Runs ruff formatting
   format:
     desc: "Format files using ruff"
     cmds:
       - >-
         source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
         python -m ruff format
+
+  run:
+    desc: "Run the application"
+    cmds:
+      - >-
+        source {{"{{"}}.PYTHON_VENV{{"}}"}}/bin/activate
+        fastapi dev
 
   docker-build:
     desc: "Build the Docker image"
