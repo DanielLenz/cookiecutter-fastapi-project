@@ -7,7 +7,7 @@ copyright = "2024, Daniel Lenz"
 author = "Daniel Lenz"
 
 release = "0.1"
-version = "0.1.0"
+version = "0.1.1"
 
 # -- General configuration
 
