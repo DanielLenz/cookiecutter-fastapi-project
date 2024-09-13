@@ -42,7 +42,7 @@ def test_update_user(client: TestClient):
     assert data["id"] == user_id
 
 
-def test_delete_item(client: TestClient):
+def test_delete_user(client: TestClient):
     user = UserCreate(name="Another Test User")
     response = client.post("/v0/users/", json=user.model_dump())
     user_id = response.json()["id"]

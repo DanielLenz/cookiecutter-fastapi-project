@@ -2,6 +2,7 @@
 ruff
 uv
 mypy
+types-toml
 ipython
 pytest
 pytest-cov

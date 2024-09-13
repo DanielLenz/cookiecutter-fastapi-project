@@ -3,38 +3,57 @@ from fastapi.testclient import TestClient
 from sqlalchemy import StaticPool, create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.common.database import get_db
-from app.common.interfaces import Base
+from app.database.conn import get_session
+from app.database.models import Base, DBUser
 from app.main import app
 
-DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}, poolclass=StaticPool
+TEST_DATABASE_URL = "sqlite:///:memory:"
+
+test_engine = create_engine(
+    TEST_DATABASE_URL, connect_args={"check_same_thread": False}, poolclass=StaticPool
 )
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
 
 
-@pytest.fixture(scope="module")
-def setup_database():
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
+@pytest.fixture(scope="session")
+def session():
+    # Initialize
+    Base.metadata.create_all(bind=test_engine)
+    db_session = TestingSessionLocal()
 
-
-@pytest.fixture(scope="module")
-def db_session():
-    db = TestingSessionLocal()
     try:
-        yield db
-    finally:
-        db.close()
+        # Add mock data to mock DB
+        mock_users = [
+            DBUser(id=1, name="Charlie"),
+            DBUser(id=2, name="David"),
+        ]
 
+        db_session.bulk_save_objects(mock_users)
+        db_session.commit()
 
-@pytest.fixture(scope="module")
-def client(db_session, setup_database):
-    def get_test_db():
         yield db_session
 
-    app.dependency_overrides[get_db] = get_test_db
-    with TestClient(app) as client:
-        yield client
+    finally:
+        # Teardown
+        db_session.close()
+        Base.metadata.drop_all(bind=test_engine)
+
+
+@pytest.fixture(scope="session")
+def override_get_session(session):
+    def _override_get_session():
+        return session
+
+    return _override_get_session
+
+
+@pytest.fixture
+def client(override_get_session):
+    # Initialize
+    app.dependency_overrides[get_session] = override_get_session
+
+    with TestClient(app) as c:
+        yield c
+    # Teardown
+    app.dependency_overrides.clear()

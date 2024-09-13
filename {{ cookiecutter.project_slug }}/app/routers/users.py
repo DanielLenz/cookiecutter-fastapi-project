@@ -1,49 +1,40 @@
-from fastapi import APIRouter, HTTPException
-from fastapi.params import Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.common.database import get_db
-from app.common.interfaces import DBUser, User, UserCreate, UserUpdate
+from app.common.exceptions import NotFoundError
+from app.common.interfaces import User, UserCreate, UserUpdate
+from app.database.conn import get_session
+from app.logic.users import db_create_user, db_delete_user, db_get_user, db_update_user
 
 router = APIRouter()
 
-TAGS = ["Users"]
+
+@router.post("/", response_model=User, tags=["Users"])
+async def create_user(user: UserCreate, session: Session = Depends(get_session)):
+    return db_create_user(user, session)
 
 
-@router.post("/", response_model=User, tags=TAGS)
-async def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = DBUser(**user.model_dump())
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return User(**db_user.__dict__)
-
-
-@router.get("/{user_id}", response_model=User, tags=TAGS)
-async def get_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
-    if not db_user:
+@router.get("/{user_id}", response_model=User, tags=["Users"])
+def get_user(user_id: int, session: Session = Depends(get_session)) -> User:
+    try:
+        return db_get_user(user_id, session)
+    except NotFoundError:
         raise HTTPException(status_code=404, detail="User not found")
-    return User(**db_user.__dict__)
 
 
-@router.put("/{user_id}", response_model=User, tags=TAGS)
-async def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
-    db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
-    if not db_user:
+@router.put("/{user_id}", response_model=User, tags=["Users"])
+async def update_user(
+    user_id: int, user: UserUpdate, session: Session = Depends(get_session)
+):
+    try:
+        return db_update_user(user_id, user, session)
+    except NotFoundError:
         raise HTTPException(status_code=404, detail="User not found")
-    for key, value in user.model_dump().items():
-        setattr(db_user, key, value)
-    db.commit()
-    db.refresh(db_user)
-    return User(**db_user.__dict__)
 
 
-@router.delete("/{user_id}", response_model=User, tags=TAGS)
-async def delete_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
-    if not db_user:
+@router.delete("/{user_id}", response_model=User, tags=["Users"])
+async def delete_user(user_id: int, session: Session = Depends(get_session)):
+    try:
+        return db_delete_user(user_id, session)
+    except NotFoundError:
         raise HTTPException(status_code=404, detail="User not found")
-    db.delete(db_user)
-    db.commit()
-    return User(**db_user.__dict__)

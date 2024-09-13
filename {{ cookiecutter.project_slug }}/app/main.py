@@ -2,16 +2,15 @@ from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from app.common.config import SWAGGER_TAGS, VERSION
-from app.common.database import engine
-from app.common.interfaces import Base
 from app.common.ratelimits import limiter
 from app.common.uri import HOME_URI, SWAGGER_DOCS_URI, VERSION_URI
+from app.database.conn import engine
+from app.database.models import Base
 from app.routers import chat, users
 
 
@@ -65,7 +64,7 @@ app.add_middleware(
 
 # Rate limiting
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore
 app.add_middleware(SlowAPIMiddleware)
 
 
